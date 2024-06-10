@@ -1,6 +1,15 @@
 import numpy as np
 
 
+def format_numbers(x):
+    if isinstance(x, (int, float)):
+        if float(x).is_integer():
+            return "{:,.0f}".format(x)
+        else:
+            return "{:,.2f}".format(x)
+    return x
+
+
 def extended_describe(df):
     desc = df.describe()
     desc = desc.rename(
@@ -19,4 +28,8 @@ def extended_describe(df):
     desc.loc["RIC"] = desc.loc["Q3"] - desc.loc["Q1"]
     desc.loc["Asimetría"] = df[numeric_cols].skew()
     desc.loc["Curtosis"] = df[numeric_cols].kurtosis()
+
+    # Apply the format_numbers function
+    desc = desc.map(format_numbers)
+
     return desc
