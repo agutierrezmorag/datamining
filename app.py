@@ -10,7 +10,7 @@ def main():
     )
     st.title("Satisfaccion del Cliente")
 
-    data = pd.read_csv("data/train_clean.csv")
+    data = pd.read_csv("data/airline_merged_clean.csv")
     st.dataframe(data)
 
     with st.expander("Atributos"):
