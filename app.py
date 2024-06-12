@@ -1,9 +1,42 @@
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
+import plotly.express as px
 import streamlit as st
 
 from helper_functions import extended_describe
+
+
+def set_font_size(fig):
+    size = 24
+    fig.update_layout(
+        font=dict(
+            size=size,
+        ),
+        title_font=dict(
+            size=size,
+        ),
+        legend=dict(
+            font=dict(
+                size=size,
+            )
+        ),
+        xaxis=dict(
+            title_font=dict(
+                size=size,
+            ),
+            tickfont=dict(
+                size=size,
+            ),
+        ),
+        yaxis=dict(
+            title_font=dict(
+                size=size,
+            ),
+            tickfont=dict(
+                size=size,
+            ),
+        ),
+    )
+    return fig
 
 
 @st.cache_data
@@ -12,8 +45,7 @@ def get_df():
 
 
 @st.cache_data
-def load_data():
-    data = get_df()
+def display_tables(data):
     st.dataframe(data)
 
     with st.expander("Atributos"):
@@ -45,43 +77,131 @@ def load_data():
         | **Satisfaction** | Nivel de satisfacción con la aerolínea (Satisfacción, neutral o insatisfacción) |
                     """)
 
-    st.subheader("Estadísticas descriptivas")
+    return data
+
+
+@st.cache_data
+def display_descriptive_stats(data):
     st.dataframe(extended_describe(data))
+
+
+def display_charts(data):
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        # Calculate the counts
+        counts = data["Type Of Travel"].value_counts()
+
+        # Convert the counts to a DataFrame
+        df_counts = pd.DataFrame(
+            {"Type Of Travel": counts.index, "Count": counts.values}
+        )
+
+        # Create a bar chart for 'Type Of Travel' using Plotly
+        fig = px.bar(
+            data_frame=df_counts,
+            x="Type Of Travel",
+            y="Count",
+            color="Type Of Travel",
+            color_discrete_map={
+                "Personal Travel": "LightSkyBlue",
+                "Business travel": "OliveDrab",
+            },
+            text="Count",
+            title="Total de pasajeros por Tipo de Viaje",
+            labels={
+                "Type Of Travel": "Tipo de Viaje",
+                "Count": "Pasajeros",
+            },
+        )
+
+        fig.update_traces(textposition="auto", textfont_color="white")
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col2:
+        # Get counts of each gender
+        gender_counts = data["Gender"].value_counts()
+
+        # Create a pie chart
+        fig = px.pie(
+            gender_counts,
+            values=gender_counts.values,
+            names=gender_counts.index,
+            color=gender_counts.index,
+            color_discrete_map={"Female": "Orchid", "Male": "CornflowerBlue"},
+            title="Distribución de género de los pasajeros",
+        )
+
+        # Add percentage and value to the labels
+        fig.update_traces(textinfo="label+percent+value")
+
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col3:
+        # Calculate the counts
+        counts = data["Satisfaction"].value_counts()
+
+        # Convert the counts to a DataFrame
+        df_counts = pd.DataFrame({"Satisfaction": counts.index, "Count": counts.values})
+
+        # Create a bar chart for 'Satisfaction' using Plotly
+        fig = px.bar(
+            data_frame=df_counts,
+            x="Satisfaction",
+            y="Count",
+            color="Satisfaction",
+            text="Count",
+            color_discrete_map={
+                "Neutral or Dissatisfied": "Crimson",
+                "Satisfied": "Chartreuse",
+            },
+            title="Distribución de satisfacción de los pasajeros",
+            labels={
+                "Satisfaction": "Nivel de Satisfacción",
+                "Count": "Pasajeros",
+            },
+        )
+
+        fig.update_traces(textposition="auto", textfont_color="white")
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
 
 
 def main():
     st.set_page_config(
         page_title="Satisfaccion del Cliente", page_icon=":airplane:", layout="wide"
     )
-    st.title("Satisfaccion del Cliente")
 
+    st.title("🙋‍♂️ :blue[Satisfaccion del Cliente]")
     data = get_df()
-    load_data()
+    display_tables(data)
 
-    col1, col2 = st.columns(2)
+    st.subheader("🔍 :blue[Estadísticas descriptivas]")
+    display_descriptive_stats(data)
 
-    with col1:
-        # Create a bar chart for 'Type Of Travel' using Seaborn
-        plt.figure(figsize=(8, 6))
-        chart = sns.countplot(x="Type Of Travel", data=data, palette="viridis")
-        chart.set_xticklabels(chart.get_xticklabels(), rotation=0)
-        chart.set_title("Total de Pasajeros por Tipo de Viaje", weight="bold")
-        chart.set_xlabel("Tipo de viaje", weight="bold")
-        chart.set_ylabel("Pasajeros", weight="bold")
+    st.subheader("🕵️ :blue[Visualizaciones]")
+    option_col1, option_col2 = st.columns(2)
+    with option_col1:
+        plot_type = st.selectbox(
+            "Seleccione un tipo de gráfico", ["Histograma", "Linea", "Box Plot"]
+        )
+    with option_col2:
+        column = st.selectbox("Seleccione una columna", data.columns)
 
-        # Add count annotations to each bar
-        for p in chart.patches:
-            chart.annotate(
-                format(p.get_height(), ".0f"),
-                (p.get_x() + p.get_width() / 2.0, p.get_height()),
-                ha="center",
-                va="center",
-                xytext=(0, 5),
-                textcoords="offset points",
-            )
+    if plot_type == "Histograma":
+        fig = px.histogram(data, x=column)
+    elif plot_type == "Linea":
+        fig = px.line(data, x=column)
+    elif plot_type == "Box Plot":
+        fig = px.box(data, x=column)
+    fig.update_layout(title=f"{plot_type} de {column}")
+    fig = set_font_size(fig)
+    st.plotly_chart(fig)
 
-        # Display the bar chart using Streamlit
-        st.pyplot(plt.gcf())
+    st.subheader("📊 :blue[Gráficos]")
+    display_charts(data)
 
 
 if __name__ == "__main__":
