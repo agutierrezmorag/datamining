@@ -134,8 +134,7 @@ def display_charts(data):
         )
 
         # Add percentage and value to the labels
-        fig.update_traces(textinfo="label+percent+value")
-
+        fig.update_traces(textinfo="label+percent+value", textfont_color="white")
         fig = set_font_size(fig)
         st.plotly_chart(fig)
 
