@@ -168,6 +168,28 @@ def display_charts(data):
         fig = set_font_size(fig)
         st.plotly_chart(fig)
 
+    with col1:
+        fig = px.histogram(
+            data,
+            x="Flight Distance",
+            nbins=50,
+            title="Distribución de Distancia de Vuelo",
+            color_discrete_sequence=["#636EFA"],
+            template="plotly_dark",
+        )
+
+        fig.update_traces(textposition="inside", texttemplate="%{y}", textfont_size=28)
+
+        fig.update_layout(
+            xaxis_title_text="Distancia de Vuelo",
+            yaxis_title_text="Vuelos",
+            bargap=0.2,
+            bargroupgap=0.1,
+        )
+
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
 
 def main():
     st.set_page_config(
