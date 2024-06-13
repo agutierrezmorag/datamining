@@ -134,7 +134,7 @@ def display_charts(data):
         )
 
         fig.update_traces(textinfo="label+percent+value", textfont_color="white")
-        fig.update_layout(legend_title_text="Género")
+        fig.update_layout(legend_title_text="Género", separators=",.")
 
         fig = set_font_size(fig)
         st.plotly_chart(fig)
@@ -167,7 +167,7 @@ def display_charts(data):
             )
         )
 
-        fig.update_layout(legend_title_text="Nivel de Satisfacción")
+        fig.update_layout(legend_title_text="Nivel de Satisfacción", separators=",.")
 
         fig = set_font_size(fig)
         st.plotly_chart(fig)
