@@ -133,8 +133,9 @@ def display_charts(data):
             title="Distribución de género de los pasajeros",
         )
 
-        # Add percentage and value to the labels
         fig.update_traces(textinfo="label+percent+value", textfont_color="white")
+        fig.update_layout(legend_title_text="Género")
+
         fig = set_font_size(fig)
         st.plotly_chart(fig)
 
@@ -165,6 +166,8 @@ def display_charts(data):
                 textfont_color="white",
             )
         )
+
+        fig.update_layout(legend_title_text="Nivel de Satisfacción")
 
         fig = set_font_size(fig)
         st.plotly_chart(fig)
