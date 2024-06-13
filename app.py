@@ -219,20 +219,30 @@ def main():
     display_descriptive_stats(data)
 
     st.subheader("🕵️ :blue[Visualizaciones]")
-    option_col1, option_col2 = st.columns(2)
+    option_col1, option_col2, option_col3 = st.columns(3)
     with option_col1:
         plot_type = st.selectbox(
             "Seleccione un tipo de gráfico", ["Histograma", "Linea", "Box Plot"]
         )
     with option_col2:
         column = st.selectbox("Seleccione una columna", data.columns)
+    with option_col3:
+        color_input = st.text_input(
+            "Ingrese una secuencia de colores (separados por comas)"
+        )
+
+    color_sequences = (
+        px.colors.qualitative.Plotly if not color_input else color_input.split(",")
+    )
 
     if plot_type == "Histograma":
-        fig = px.histogram(data, x=column)
+        fig = px.histogram(
+            data, x=column, color=column, color_discrete_sequence=color_sequences
+        )
     elif plot_type == "Linea":
-        fig = px.line(data, x=column)
+        fig = px.line(data, x=column, template="plotly_dark")
     elif plot_type == "Box Plot":
-        fig = px.box(data, x=column)
+        fig = px.box(data, x=column, template="plotly_dark")
     fig.update_layout(title=f"{plot_type} de {column}")
     fig = set_font_size(fig)
     st.plotly_chart(fig)
