@@ -201,6 +201,17 @@ def main():
     data = get_df()
     display_tables(data)
 
+    st.markdown(
+        """
+        <style>
+        .legendtitletext {
+            font-size: 23px !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     st.subheader("🔍 :blue[Estadísticas descriptivas]")
     display_descriptive_stats(data)
 
