@@ -140,31 +140,33 @@ def display_charts(data):
         st.plotly_chart(fig)
 
     with col3:
-        # Calculate the counts
-        counts = data["Satisfaction"].value_counts()
-
-        # Convert the counts to a DataFrame
-        df_counts = pd.DataFrame({"Satisfaction": counts.index, "Count": counts.values})
-
-        # Create a bar chart for 'Satisfaction' using Plotly
-        fig = px.bar(
-            data_frame=df_counts,
-            x="Satisfaction",
-            y="Count",
-            color="Satisfaction",
-            text="Count",
-            color_discrete_map={
-                "Neutral or Dissatisfied": "Crimson",
-                "Satisfied": "Chartreuse",
-            },
-            title="Distribución de satisfacción de los pasajeros",
-            labels={
-                "Satisfaction": "Nivel de Satisfacción",
-                "Count": "Pasajeros",
-            },
+        fig = (
+            data["Satisfaction"]
+            .value_counts()
+            .reset_index()
+            .rename(columns={"Satisfaction": "Satisfaction", "count": "Count"})
+            .pipe(
+                px.pie,
+                names="Satisfaction",
+                values="Count",
+                color="Satisfaction",
+                color_discrete_map={
+                    "Neutral or Dissatisfied": "Crimson",
+                    "Satisfied": "Chartreuse",
+                },
+                title="Distribución de satisfacción de los pasajeros",
+                labels={
+                    "Satisfaction": "Nivel de Satisfacción",
+                    "Count": "Pasajeros",
+                },
+            )
+            .update_traces(
+                textposition="inside",
+                textinfo="percent+label+value",
+                textfont_color="white",
+            )
         )
 
-        fig.update_traces(textposition="auto", textfont_color="white")
         fig = set_font_size(fig)
         st.plotly_chart(fig)
 
