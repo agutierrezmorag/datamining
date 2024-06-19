@@ -6,7 +6,7 @@ from helper_functions import extended_describe
 
 
 def set_font_size(fig):
-    size = 24
+    size = 36
     fig.update_layout(
         font=dict(
             size=size,
@@ -117,6 +117,7 @@ def display_charts(data):
 
         fig.update_traces(textposition="auto", textfont_color="white")
         fig = set_font_size(fig)
+        fig.update_layout(showlegend=False)
         st.plotly_chart(fig)
 
     with col2:
@@ -133,7 +134,7 @@ def display_charts(data):
             title="Distribución de género de los pasajeros",
         )
 
-        fig.update_traces(textinfo="label+percent+value", textfont_color="white")
+        fig.update_traces(textinfo="percent+value", textfont_color="white")
         fig.update_layout(legend_title_text="Género", separators=",.")
 
         fig = set_font_size(fig)
@@ -162,7 +163,7 @@ def display_charts(data):
             )
             .update_traces(
                 textposition="inside",
-                textinfo="percent+label+value",
+                textinfo="percent+value",
                 textfont_color="white",
             )
         )
