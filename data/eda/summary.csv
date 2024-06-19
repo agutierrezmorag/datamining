@@ -1,0 +1,24 @@
+Columna,Tipo de dato,Valores válidos,Valores nulos,Moda,Valor mínimo,Valor máximo
+Gender,string,129880,0,Female,-,-
+Customer Type,string,129880,0,Loyal Customer,-,-
+Age,int,129880,0,39,7,85
+Type Of Travel,string,129880,0,Business Travel,-,-
+Class,string,129880,0,Business,-,-
+Flight Distance,int,129880,0,337,31,4983
+Inflight Wifi Service,int,129880,0,2,0,5
+Departure/Arrival Time Convenient,int,129880,0,4,0,5
+Ease Of Online Booking,int,129880,0,3,0,5
+Gate Location,int,129880,0,3,0,5
+Food And Drink,int,129880,0,4,0,5
+Online Boarding,int,129880,0,4,0,5
+Seat Comfort,int,129880,0,4,0,5
+Inflight Entertainment,int,129880,0,4,0,5
+On-Board Service,int,129880,0,4,0,5
+Leg Room Service,int,129880,0,4,0,5
+Baggage Handling,int,129880,0,4,1,5
+Checkin Service,int,129880,0,4,0,5
+Inflight Service,int,129880,0,4,0,5
+Cleanliness,int,129880,0,4,0,5
+Departure Delay In Minutes,int,129880,0,0,0,1592
+Arrival Delay In Minutes,float,129487,393,0.0,0.0,1584.0
+Satisfaction,string,129880,0,Neutral or Dissatisfied,-,-
