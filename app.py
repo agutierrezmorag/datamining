@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -5,8 +6,7 @@ import streamlit as st
 from helper_functions import extended_describe
 
 
-def set_font_size(fig):
-    size = 36
+def set_font_size(fig, size=36):
     fig.update_layout(
         font=dict(
             size=size,
@@ -104,8 +104,8 @@ def display_charts(data):
             y="Count",
             color="Type Of Travel",
             color_discrete_map={
-                "Personal Travel": "LightSkyBlue",
-                "Business travel": "OliveDrab",
+                "Personal Travel": "SandyBrown",  # Vibrant orange for personal travel
+                "Business Travel": "#34495E",  # Navy blue for business travel
             },
             text="Count",
             title="Total de pasajeros por Tipo de Viaje",
@@ -186,13 +186,188 @@ def display_charts(data):
         fig.update_traces(textposition="inside", texttemplate="%{y}", textfont_size=28)
 
         fig.update_layout(
-            xaxis_title_text="Distancia de Vuelo",
+            xaxis_title_text="Distancia de Vuelo (km)",
             yaxis_title_text="Vuelos",
             bargap=0.2,
             bargroupgap=0.1,
         )
 
         fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col2:
+        fig = px.histogram(
+            data,
+            x="Age",
+            title="Distribución de Edad",
+            color_discrete_sequence=["#636EFA"],
+            template="plotly_dark",
+            range_x=[0, 90],  # Adjusted to start from 0 and cover up to 90
+            nbins=9,  # Adjusted to create 9 bins, which will cover the range 0-90 in steps of 10
+        )
+
+        fig.update_traces(textposition="inside", texttemplate="%{y}", textfont_size=28)
+
+        fig.update_layout(
+            xaxis_title_text="Edad",
+            yaxis_title_text="Pasajeros",
+            bargap=0.2,
+            bargroupgap=0.1,
+        )
+
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col3:
+        class_counts = data["Class"].value_counts()
+
+        fig = px.pie(
+            class_counts,
+            values=class_counts.values,
+            names=class_counts.index,
+            color=class_counts.index,
+            color_discrete_map={
+                "Business": "LightBlue",
+                "Eco": "DarkSeaGreen",
+                "Eco Plus": "GreenYellow",
+            },
+            title="Distribución de clase de los pasajeros",
+        )
+
+        fig.update_traces(textinfo="percent+value", textfont_color="white")
+        fig.update_layout(legend_title_text="Clase", separators=",.")
+
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col1:
+        customer_counts = data["Customer Type"].value_counts()
+
+        fig = px.pie(
+            customer_counts,
+            values=customer_counts.values,
+            names=customer_counts.index,
+            color=customer_counts.index,
+            color_discrete_map={
+                "Loyal Customer": "LightGreen",
+                "Disloyal Customer": "LightCoral",
+            },
+            title="Distribución de tipo de cliente",
+        )
+
+        fig.update_traces(textinfo="percent+value", textfont_color="white")
+        fig.update_layout(legend_title_text="Tipo de cliente", separators=",.")
+
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col2:
+        fig = px.histogram(
+            data_frame=data,
+            x="Gate Location",
+            title="Distribución de Satisfacción de Ubicación de Puerta",
+            labels={"Gate Location": "Nivel de Satisfacción"},
+            color_discrete_sequence=["#636EFA"],
+            category_orders={"Gate Location": [1, 2, 3, 4, 5]},
+        )
+        fig.update_layout(
+            xaxis_title_text="Nivel de Satisfacción",
+            yaxis_title_text="Frecuencia",
+            xaxis=dict(
+                tickmode="array",
+                tickvals=[1, 2, 3, 4, 5],
+                ticktext=["1", "2", "3", "4", "5"],
+                range=[
+                    0.5,
+                    5.5,
+                ],  # Sets the range of the x-axis to start from 1 and end at 5
+            ),
+            bargap=0.2,  # Adjusts the gap between bars
+        )
+
+        fig.update_traces(textposition="inside", texttemplate="%{y}", textfont_size=28)
+        fig = set_font_size(fig)
+        st.plotly_chart(fig)
+
+    with col3:
+        # Define the columns to include
+        columns_to_include = [
+            "Inflight Wifi Service",
+            "Departure/Arrival Time Convenient",
+            "Ease Of Online Booking",
+            "Gate Location",
+            "Food And Drink",
+            "Online Boarding",
+            "Seat Comfort",
+            "Inflight Entertainment",
+            "On-Board Service",
+            "Leg Room Service",
+            "Baggage Handling",
+            "Checkin Service",
+            "Inflight Service",
+            "Cleanliness",
+        ]
+
+        # Filter the DataFrame to include only the specified columns
+        filtered_data = data[columns_to_include]
+
+        data_long = pd.melt(filtered_data, var_name="Servicio", value_name="Rating")
+        rating_counts = (
+            data_long.groupby(["Servicio", "Rating"])
+            .size()
+            .reset_index(name="Pasajeros")
+        )
+
+        pivot_table = rating_counts.pivot(
+            index="Servicio", columns="Rating", values="Pasajeros"
+        )
+
+        pivot_table = pivot_table.reindex(columns=[0, 1, 2, 3, 4, 5], fill_value=0)
+
+        fig = px.imshow(
+            pivot_table,
+            labels=dict(x="Rating", y="Servicio", color="Pasajeros"),
+            x=[str(i) for i in range(0, 6)],
+            aspect="auto",
+            title="Service Satisfaction Heatmap",
+            color_continuous_scale="Viridis",
+        )
+
+        fig.update_layout(
+            title_text="Satisfacción de los pasajeros por servicio",
+            title_x=0.5,
+            title_font=dict(size=24),
+            xaxis=dict(tickfont=dict(size=12)),
+            yaxis=dict(tickfont=dict(size=12)),
+            autosize=False,
+            width=1000,
+            height=800,
+            coloraxis_colorbar=dict(
+                title="Pasajeros",
+                titleside="right",
+                titlefont=dict(size=12),
+                tickfont=dict(size=10),
+            ),
+        )
+
+        for y in range(pivot_table.shape[0]):
+            for x in range(pivot_table.shape[1]):
+                if np.isnan(pivot_table.iloc[y, x]):
+                    text_value = "N/A"
+                else:
+                    # Format the number with commas as thousands separators
+                    formatted_number = "{:,}".format(int(pivot_table.iloc[y, x]))
+                    # Replace commas with periods
+                    text_value = formatted_number.replace(",", ".")
+                fig.add_annotation(
+                    x=x,
+                    y=y,
+                    text=text_value,
+                    showarrow=False,
+                    font=dict(color="white"),
+                )
+
+        fig = set_font_size(fig, 30)
         st.plotly_chart(fig)
 
 
@@ -209,7 +384,7 @@ def main():
         """
         <style>
         .legendtitletext {
-            font-size: 23px !important;
+            font-size: 26px !important;
         }
         </style>
         """,
