@@ -370,6 +370,63 @@ def display_charts(data):
         fig = set_font_size(fig, 30)
         st.plotly_chart(fig)
 
+    with col1:
+        # Calculate the 95th percentile to limit the effect of outliers
+        max_x_range = data["Departure Delay In Minutes"].quantile(0.95)
+
+        fig_departure_delays = px.histogram(
+            data_frame=data,
+            x="Departure Delay In Minutes",
+            title="Distribution of Departure Delays",
+            labels={"Departure Delay In Minutes": "Delay (Minutes)"},
+            color_discrete_sequence=["#EF553B"],
+            template="plotly_white",
+            nbins=100,  # Adjusted for a broader data range
+        )
+        fig_departure_delays.update_layout(
+            xaxis_title="Delay in Minutes",
+            yaxis_title="Number of Flights",
+            xaxis_range=[
+                0,
+                max_x_range,
+            ],  # Dynamically set based on the 95th percentile
+            # Consider enabling the log scale if the data is heavily skewed
+            yaxis_type="log",
+        )
+        st.plotly_chart(fig_departure_delays)
+
+    with col2:
+        # Histogram for Arrival Delays
+        fig_arrival_delays = px.histogram(
+            data_frame=data,
+            x="Arrival Delay In Minutes",
+            title="Distribution of Arrival Delays",
+            labels={"Arrival Delay In Minutes": "Delay (Minutes)"},
+            color_discrete_sequence=["#00CC96"],
+            template="plotly_white",
+        )
+        fig_arrival_delays.update_layout(
+            xaxis_title="Delay in Minutes", yaxis_title="Number of Flights"
+        )
+        st.plotly_chart(fig_arrival_delays)
+
+    with col3:
+        # Scatter Plot to Compare Departure and Arrival Delays
+        fig_delay_comparison = px.scatter(
+            data_frame=data,
+            x="Departure Delay In Minutes",
+            y="Arrival Delay In Minutes",
+            title="Comparación de Retrasos en la Salida y Llegada",
+            labels={
+                "Departure Delay In Minutes": "Retraso en la Salida (Minutos)",
+                "Arrival Delay In Minutes": "Retraso en la Llegada (Minutos)",
+            },
+            trendline="ols",  # Adds a line of best fit
+            color_continuous_scale=px.colors.sequential.Viridis,
+        )
+        fig_delay_comparison = set_font_size(fig_delay_comparison)
+        st.plotly_chart(fig_delay_comparison)
+
 
 def main():
     st.set_page_config(
