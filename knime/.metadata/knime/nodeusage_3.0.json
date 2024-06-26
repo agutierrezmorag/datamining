@@ -1,0 +1,169 @@
+{
+    "version": "5.2.5.v202405310911",
+    "created": "2024-06-23 23:30",
+    "nodestats": {
+        "nodes": [
+            {
+                "id": "org.knime.base.node.io.filehandling.csv.reader.CSVTableReaderNodeFactory",
+                "nodename": "CSV Reader",
+                "nrexecs": 1,
+                "nrfails": 0,
+                "exectime": 747,
+                "nrcreated": 1,
+                "successor": "org.knime.base.node.preproc.filter.column.DataColumnSpecFilterNodeFactory",
+                "successornodename": "Column Filter"
+            },
+            {
+                "id": "org.knime.base.node.preproc.filter.column.DataColumnSpecFilterNodeFactory",
+                "nodename": "Column Filter",
+                "nrexecs": 4,
+                "nrfails": 0,
+                "exectime": 8,
+                "nrcreated": 1,
+                "successor": "org.knime.base.node.preproc.valuelookup.ValueLookupNodeFactory",
+                "successornodename": "Value Lookup"
+            },
+            {
+                "id": "org.knime.base.node.preproc.pmml.missingval.compute.MissingValueHandlerNodeFactory",
+                "nodename": "Missing Value",
+                "nrexecs": 4,
+                "nrfails": 0,
+                "exectime": 1888,
+                "nrcreated": 1,
+                "successor": "org.knime.base.node.preproc.stringreplacer.StringReplacerNodeFactory",
+                "successornodename": "String Replacer"
+            },
+            {
+                "id": "org.knime.base.node.preproc.valuelookup.ValueLookupNodeFactory",
+                "nodename": "Value Lookup",
+                "nrexecs": 5,
+                "nrfails": 0,
+                "exectime": 634,
+                "nrcreated": 2,
+                "successor": "org.knime.base.node.preproc.colconvert.stringtonumber2.StringToNumber2NodeFactory",
+                "successornodename": "String to Number"
+            },
+            {
+                "id": "org.knime.base.node.preproc.colconvert.numbertostring2.NumberToString2NodeFactory",
+                "nodename": "Number to String",
+                "nrexecs": 0,
+                "nrfails": 0,
+                "exectime": 0,
+                "nrcreated": 2,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.base.node.io.tablecreator.TableCreator2NodeFactory",
+                "nodename": "Table Creator",
+                "nrexecs": 1,
+                "nrfails": 0,
+                "exectime": 2,
+                "nrcreated": 1,
+                "successor": "org.knime.base.node.preproc.valuelookup.ValueLookupNodeFactory",
+                "successornodename": "Value Lookup"
+            },
+            {
+                "id": "org.knime.base.node.preproc.stringreplacer.StringReplacerNodeFactory",
+                "nodename": "String Replacer",
+                "nrexecs": 0,
+                "nrfails": 0,
+                "exectime": 0,
+                "nrcreated": 1,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.base.node.io.filehandling.csv.writer.CSVWriter2NodeFactory",
+                "nodename": "CSV Writer",
+                "nrexecs": 5,
+                "nrfails": 1,
+                "exectime": 3372,
+                "nrcreated": 4,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.base.node.preproc.colconvert.stringtonumber2.StringToNumber2NodeFactory",
+                "nodename": "String to Number",
+                "nrexecs": 4,
+                "nrfails": 0,
+                "exectime": 1210,
+                "nrcreated": 1,
+                "successor": "org.knime.python3.scripting.nodes2.script.PythonScriptNodeFactory",
+                "successornodename": "Python Script"
+            },
+            {
+                "id": "org.knime.base.node.preproc.table.cropper.TableCropperNodeFactory",
+                "nodename": "Table Cropper",
+                "nrexecs": 4,
+                "nrfails": 0,
+                "exectime": 584,
+                "nrcreated": 2,
+                "successor": "org.knime.base.node.io.filehandling.csv.writer.CSVWriter2NodeFactory",
+                "successornodename": "CSV Writer"
+            },
+            {
+                "id": "org.knime.python3.scripting.nodes2.script.PythonScriptNodeFactory",
+                "nodename": "Python Script",
+                "nrexecs": 10,
+                "nrfails": 2,
+                "exectime": 31403,
+                "nrcreated": 6,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.base.node.preproc.correlation.compute2.CorrelationCompute2NodeFactory",
+                "nodename": "Linear Correlation",
+                "nrexecs": 0,
+                "nrfails": 0,
+                "exectime": 0,
+                "nrcreated": 1,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.python2.nodes.script2.Python2ScriptNodeFactory2",
+                "nodename": "Python Script (legacy)",
+                "nrexecs": 0,
+                "nrfails": 0,
+                "exectime": 0,
+                "nrcreated": 1,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            },
+            {
+                "id": "org.knime.ext.poi3.node.io.filehandling.excel.reader.ExcelTableReaderNodeFactory",
+                "nodename": "Excel Reader",
+                "nrexecs": 0,
+                "nrfails": 0,
+                "exectime": 0,
+                "nrcreated": 1,
+                "successor": "n/a",
+                "successornodename": "n/a"
+            }
+        ],
+        "metaNodes": {
+        },
+        "wrappedNodes": {
+        },
+        "createdVia": {
+            "WEB_UI": 25
+        }
+    },
+    "uptime": 2308590,
+    "workflowsOpened": 11,
+    "remoteWorkflowsOpened": 0,
+    "columnarStorageWorkflowsOpened": 0,
+    "workflowsImported": 0,
+    "workflowsExported": 0,
+    "webUIPerspectiveSwitches": 0,
+    "javaUIPerspectiveSwitches": 0,
+    "lastUsedPerspective": "none",
+    "launches": 11,
+    "lastApplicationID": "org.knime.product.KNIME_APPLICATION",
+    "timeSinceLastStart": 1147547,
+    "crashes": 2,
+    "properlyShutDown": false
+}

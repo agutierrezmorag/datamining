@@ -1,0 +1,5 @@
+D:\Mineria de datos\datamining-IN\data\airline_correlation2.csv
+D:\Mineria de datos\datamining-IN\data\airline_correlation.csv
+D:\Mineria de datos\datamining-IN\data\airline_correlation_test.csv
+D:\Mineria de datos\datamining-IN\data\airline_correlation_train.csv
+D:\Mineria de datos\datamining-IN\data\airline_merged.csv
