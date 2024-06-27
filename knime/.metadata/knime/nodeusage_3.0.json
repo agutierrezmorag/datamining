@@ -36,9 +36,9 @@
             {
                 "id": "org.knime.base.node.preproc.valuelookup.ValueLookupNodeFactory",
                 "nodename": "Value Lookup",
-                "nrexecs": 5,
+                "nrexecs": 6,
                 "nrfails": 0,
-                "exectime": 634,
+                "exectime": 1415,
                 "nrcreated": 2,
                 "successor": "org.knime.base.node.preproc.colconvert.stringtonumber2.StringToNumber2NodeFactory",
                 "successornodename": "String to Number"
@@ -86,9 +86,9 @@
             {
                 "id": "org.knime.base.node.preproc.colconvert.stringtonumber2.StringToNumber2NodeFactory",
                 "nodename": "String to Number",
-                "nrexecs": 4,
+                "nrexecs": 5,
                 "nrfails": 0,
-                "exectime": 1210,
+                "exectime": 1986,
                 "nrcreated": 1,
                 "successor": "org.knime.python3.scripting.nodes2.script.PythonScriptNodeFactory",
                 "successornodename": "Python Script"
@@ -106,9 +106,9 @@
             {
                 "id": "org.knime.python3.scripting.nodes2.script.PythonScriptNodeFactory",
                 "nodename": "Python Script",
-                "nrexecs": 10,
+                "nrexecs": 13,
                 "nrfails": 2,
-                "exectime": 31403,
+                "exectime": 84004,
                 "nrcreated": 6,
                 "successor": "n/a",
                 "successornodename": "n/a"
@@ -152,7 +152,7 @@
             "WEB_UI": 25
         }
     },
-    "uptime": 2308590,
+    "uptime": 4316710,
     "workflowsOpened": 11,
     "remoteWorkflowsOpened": 0,
     "columnarStorageWorkflowsOpened": 0,
@@ -163,7 +163,7 @@
     "lastUsedPerspective": "none",
     "launches": 11,
     "lastApplicationID": "org.knime.product.KNIME_APPLICATION",
-    "timeSinceLastStart": 1147547,
+    "timeSinceLastStart": 23236862,
     "crashes": 2,
-    "properlyShutDown": false
+    "properlyShutDown": true
 }

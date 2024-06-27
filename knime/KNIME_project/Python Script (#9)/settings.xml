@@ -6,7 +6,7 @@
         <entry key="memory_policy" type="xstring" value="CacheSmallInMemory"/>
     </config>
     <config key="model">
-        <entry key="script" type="xstring" value="import knime.scripting.io as knio%%00010import pandas as pd%%00010from scipy.stats import spearmanr%%00010%%00010data = knio.input_tables[0].to_pandas()%%00010%%00010# Inicializar diccionarios para almacenar los resultados%%00010spearman_results = {}%%00010%%00010# Calcular coeficiente de correlación de Spearman%%00010for question in data.columns[:-1]:  # Con la última columna como variable objetivo%%00010    corr, p_value = spearmanr(data[question], data['satisfaction'])%%00010    spearman_results[question] = {'correlation': corr, 'p-value': p_value}%%00010%%00010%%00010# Convertir resultados a DataFrames%%00010spearman_df = pd.DataFrame.from_dict(spearman_results, orient='index')%%00010%%00010# Output: result_table %%00010result = spearman_df.reset_index()%%00010%%00010# Renombrar columnas para claridad%%00010result.columns = ['question', 'spearman_correlation', 'spearman_p_value']%%00010%%00010#Mostramos la tabla de salida%%00010output_table = knio.Table.from_pandas(result)%%00010knio.output_tables[0] = output_table"/>
+        <entry key="script" type="xstring" value="import knime.scripting.io as knio%%00010import pandas as pd%%00010from scipy.stats import spearmanr%%00010%%00010data = knio.input_tables[0].to_pandas()%%00010%%00010# Inicializar diccionarios para almacenar los resultados%%00010spearman_results = {}%%00010%%00010# Calcular coeficiente de correlación de Spearman%%00010for question in data.columns[:-1]:  # Con la última columna como variable objetivo%%00010    corr, p_value = spearmanr(data[question], data['satisfaction'])%%00010    spearman_results[question] = {'correlation': corr, 'p-value': p_value}%%00010%%00010# Convertir resultados a DataFrames%%00010spearman_df = pd.DataFrame.from_dict(spearman_results, orient='index')%%00010%%00010# Output: result_table %%00010result = spearman_df.reset_index()%%00010%%00010# Renombrar columnas para claridad%%00010result.columns = ['question', 'spearman_correlation', 'spearman_p_value']%%00010%%00010#Mostramos la tabla de salida%%00010output_table = knio.Table.from_pandas(result)%%00010knio.output_tables[0] = output_table"/>
         <entry key="python3_command" type="xstring" value=""/>
     </config>
     <config key="variables">
@@ -76,6 +76,6 @@
     </config>
     <config key="filestores">
         <entry key="file_store_location" type="xstring" isnull="true" value=""/>
-        <entry key="file_store_id" type="xstring" value="bd168b27-6a80-4290-b623-50f9f86e415a"/>
+        <entry key="file_store_id" type="xstring" value="b3de1a71-0fe1-4b0a-a205-4798ebfcc57c"/>
     </config>
 </config>
