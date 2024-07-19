@@ -338,7 +338,7 @@ def display_charts(data):
             title_x=0.5,
             title_font=dict(size=24),
             xaxis=dict(tickfont=dict(size=12)),
-            yaxis=dict(tickfont=dict(size=12)),
+            yaxis=dict(tickfont=dict(size=12), title=""),
             autosize=False,
             width=1000,
             height=800,
@@ -350,82 +350,184 @@ def display_charts(data):
             ),
         )
 
+        max_values_per_rating = pivot_table.max()
+        # Add annotations for each cell as before
         for y in range(pivot_table.shape[0]):
             for x in range(pivot_table.shape[1]):
-                if np.isnan(pivot_table.iloc[y, x]):
-                    text_value = "N/A"
+                value = pivot_table.iloc[y, x]
+                if pd.notnull(value) and value == max_values_per_rating[x]:
+                    # Highlight maximum values with bold text and attempt to draw a border
+                    text_color = "red"
+                    font_weight = "bold"
+                    text_value = "{:,}".format(int(value)).replace(",", ".")
+                    # Draw a red border around the cell
+                    fig.add_shape(
+                        type="rect",
+                        x0=x - 0.5,
+                        y0=y - 0.5,
+                        x1=x + 0.5,
+                        y1=y + 0.5,
+                        line=dict(color="red", width=2),
+                        fillcolor="rgba(0,0,0,0)",
+                    )  # Transparent fill
+                elif pd.notnull(value):
+                    # Normal color and weight for other values
+                    text_color = "white"
+                    font_weight = "normal"
+                    text_value = "{:,}".format(int(value)).replace(",", ".")
                 else:
-                    # Format the number with commas as thousands separators
-                    formatted_number = "{:,}".format(int(pivot_table.iloc[y, x]))
-                    # Replace commas with periods
-                    text_value = formatted_number.replace(",", ".")
+                    # Handle NaN values
+                    text_color = "white"
+                    font_weight = "normal"
+                    text_value = "N/A"
+
                 fig.add_annotation(
                     x=x,
                     y=y,
                     text=text_value,
                     showarrow=False,
-                    font=dict(color="white"),
+                    font=dict(color=text_color, weight=font_weight),
                 )
 
         fig = set_font_size(fig, 30)
         st.plotly_chart(fig)
 
     with col1:
-        # Calculate the 95th percentile to limit the effect of outliers
-        max_x_range = data["Departure Delay In Minutes"].quantile(0.95)
+        # Add 'Satisfaction' to the columns to include for filtering
+        columns_to_include.append("Satisfaction")
 
-        fig_departure_delays = px.histogram(
-            data_frame=data,
-            x="Departure Delay In Minutes",
-            title="Distribution of Departure Delays",
-            labels={"Departure Delay In Minutes": "Delay (Minutes)"},
-            color_discrete_sequence=["#EF553B"],
-            template="plotly_white",
-            nbins=100,  # Adjusted for a broader data range
-        )
-        fig_departure_delays.update_layout(
-            xaxis_title="Delay in Minutes",
-            yaxis_title="Number of Flights",
-            xaxis_range=[
-                0,
-                max_x_range,
-            ],  # Dynamically set based on the 95th percentile
-            # Consider enabling the log scale if the data is heavily skewed
-            yaxis_type="log",
-        )
-        st.plotly_chart(fig_departure_delays)
+        # The 'Satisfaction' column has two unique values: 'Neutral or Dissatisfied' and 'Satisfied'
+        # Loop through each unique satisfaction level
+        for satisfaction_level in ["Neutral or Dissatisfied", "Satisfied"]:
+            # Filter data for the current satisfaction level
+            filtered_data = data[data["Satisfaction"] == satisfaction_level][
+                columns_to_include
+            ]
+
+            # Melt, count, and pivot as before
+            data_long = pd.melt(
+                filtered_data,
+                id_vars=["Satisfaction"],
+                var_name="Servicio",
+                value_name="Rating",
+            )
+            rating_counts = (
+                data_long.groupby(["Servicio", "Rating"])
+                .size()
+                .reset_index(name="Pasajeros")
+            )
+            pivot_table = rating_counts.pivot(
+                index="Servicio", columns="Rating", values="Pasajeros"
+            ).reindex(columns=[0, 1, 2, 3, 4, 5], fill_value=0)
+
+            # Create heatmap
+            fig = px.imshow(
+                pivot_table,
+                labels=dict(x="Rating", y="Servicio", color="Pasajeros"),
+                x=[str(i) for i in range(0, 6)],
+                aspect="auto",
+                title=f"Service Satisfaction Heatmap for {satisfaction_level}",
+                color_continuous_scale="Viridis",
+            )
+
+            # Update layout with satisfaction level in title and remove y-axis label
+            fig.update_layout(
+                title_text=f"Satisfacción de los pasajeros por servicio <br>{satisfaction_level}",
+                title_x=0.5,
+                title_font=dict(size=24),
+                xaxis=dict(
+                    tickfont=dict(size=12), title="Rating"
+                ),  # Ensure x-axis is labeled
+                yaxis=dict(tickfont=dict(size=12), title=""),  # Remove y-axis label
+                autosize=False,
+                width=1000,
+                height=800,
+                coloraxis_colorbar=dict(
+                    title="Pasajeros",
+                    titleside="right",
+                    titlefont=dict(size=12),
+                    tickfont=dict(size=10),
+                ),
+            )
+
+            max_values_per_rating = pivot_table.max()
+            # Add annotations for each cell as before
+            for y in range(pivot_table.shape[0]):
+                for x in range(pivot_table.shape[1]):
+                    value = pivot_table.iloc[y, x]
+                    if pd.notnull(value) and value == max_values_per_rating[x]:
+                        # Highlight maximum values with bold text and attempt to draw a border
+                        text_color = "red"
+                        font_weight = "bold"
+                        text_value = "{:,}".format(int(value)).replace(",", ".")
+                        # Draw a red border around the cell
+                        fig.add_shape(
+                            type="rect",
+                            x0=x - 0.5,
+                            y0=y - 0.5,
+                            x1=x + 0.5,
+                            y1=y + 0.5,
+                            line=dict(color="red", width=2),
+                            fillcolor="rgba(0,0,0,0)",
+                        )  # Transparent fill
+                    elif pd.notnull(value):
+                        # Normal color and weight for other values
+                        text_color = "white"
+                        font_weight = "normal"
+                        text_value = "{:,}".format(int(value)).replace(",", ".")
+                    else:
+                        # Handle NaN values
+                        text_color = "white"
+                        font_weight = "normal"
+                        text_value = "N/A"
+
+                    fig.add_annotation(
+                        x=x,
+                        y=y,
+                        text=text_value,
+                        showarrow=False,
+                        font=dict(color=text_color, weight=font_weight),
+                    )
+
+            # Adjust font size and display the plot
+            fig = set_font_size(fig, 30)
+            st.plotly_chart(fig)
 
     with col2:
-        # Histogram for Arrival Delays
-        fig_arrival_delays = px.histogram(
-            data_frame=data,
-            x="Arrival Delay In Minutes",
-            title="Distribution of Arrival Delays",
-            labels={"Arrival Delay In Minutes": "Delay (Minutes)"},
-            color_discrete_sequence=["#00CC96"],
-            template="plotly_white",
-        )
-        fig_arrival_delays.update_layout(
-            xaxis_title="Delay in Minutes", yaxis_title="Number of Flights"
-        )
-        st.plotly_chart(fig_arrival_delays)
+        # Step 1: Create a list of the column names you want to select
+        selected_columns = [
+            "Inflight Wifi Service",
+            "Departure/Arrival Time Convenient",
+            "Ease Of Online Booking",
+            "Gate Location",
+            "Food And Drink",
+            "Online Boarding",
+            "Seat Comfort",
+            "Inflight Entertainment",
+            "On-Board Service",
+            "Leg Room Service",
+            "Baggage Handling",
+            "Checkin Service",
+            "Inflight Service",
+            "Cleanliness",
+        ]
 
-    with col3:
-        # Scatter Plot to Compare Departure and Arrival Delays
-        fig_delay_comparison = px.scatter(
-            data_frame=data,
-            x="Departure Delay In Minutes",
-            y="Arrival Delay In Minutes",
-            title="Comparación de Retrasos en la Salida y Llegada",
-            labels={
-                "Departure Delay In Minutes": "Retraso en la Salida (Minutos)",
-                "Arrival Delay In Minutes": "Retraso en la Llegada (Minutos)",
-            },
-            trendline="ols",  # Adds a line of best fit
-            color_continuous_scale=px.colors.sequential.Viridis,
+        # Step 2: Use this list to select the specified columns from your DataFrame
+        selected_df = data[selected_columns]
+
+        # Step 3: Calculate the average for each of the selected columns
+        averages = selected_df.mean()
+
+        # Step 4: Convert these averages into a format suitable for plotting
+        avg_df = pd.DataFrame(
+            {"Service": averages.index, "Average Rating": averages.values}
         )
-        fig_delay_comparison = set_font_size(fig_delay_comparison)
-        st.plotly_chart(fig_delay_comparison)
+
+        # Display each average rating with st.metric for a more appealing presentation
+        for index, row in avg_df.iterrows():
+            st.metric(label=row["Service"], value=f"{row['Average Rating']:.2f}")
+
+        st.table(avg_df)
 
 
 def main():
